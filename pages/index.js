@@ -112,7 +112,7 @@ const Home = () => {
 
           {/* 50 API Calls */}
           <button onClick={() => getCountries(50)} className={styles.card}>
-            12 api calls
+            50 api calls
           </button>
 
           {/* 1 API Call + 100 dom events */}
