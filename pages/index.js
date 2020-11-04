@@ -1,25 +1,31 @@
-import { useEffect } from 'react';
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import { useEffect, useState } from "react";
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
 
-import { withApollo } from '../libs/apollo';
-// import { useQuery } from '@apollo/react-hooks';
-import { GET_COUNTRIES } from '../gql/getCountries';
+import { withApollo } from "../libs/apollo";
+// import { useQuery } from '@apollo/react-hooks'; // initial load
+import { GET_COUNTRIES, GET_BRAZIL } from "../gql/getCountries";
 
 import { useLazyQuery } from "@apollo/client";
 
 const Home = () => {
+  // const [countriesData, setCountriesData] = useState(0);
 
-  const [
-    getCountries, 
-    { loading, error, data }
-  ] = useLazyQuery(GET_COUNTRIES, {fetchPolicy: 'no-cache'});
+  const [getCountries, { loading, error, data }] = useLazyQuery(GET_COUNTRIES, {
+    fetchPolicy: "no-cache",
+  });
 
-  // const { loading, error, data } = useQuery(ALL_CHARACTERS);
-  // if (error) return <h1>Error</h1>;
-  // if (loading) return <h1>Loading...</h1>;
+  const [getCountriesTest, { loading: newLoad, error: newError, data: newData }] = useLazyQuery(GET_BRAZIL, {
+    fetchPolicy: "no-cache",
+  });
 
-  console.log('data', data);
+  // useEffect(() => {
+  //   if (!data) {
+  //     console.log('data effect')
+  //     getCountries();
+  //     getCountriesTest();
+  //   }
+  // }, [data]);
 
   return (
     <div className={styles.container}>
@@ -34,13 +40,15 @@ const Home = () => {
         </h1>
 
         <p className={styles.description}>
-          Get started by editing <code className={styles.code}>pages/index.js</code>
+          Get started by editing{" "}
+          <code className={styles.code}>pages/index.js</code>
         </p>
 
         <div className={styles.grid}>
+          {/* 1 API Call */}
           <button onClick={() => getCountries()} className={styles.card}>
-            Single api call
-            {
+            1 api call
+            {/* {
               data &&
               data.countries &&
               data.countries.map((c, i) => {
@@ -49,31 +57,64 @@ const Home = () => {
                 return <div key={i}>{c.name}</div>
                 }
               )
-            }
+            } */}
           </button>
 
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+          {/* 12 API Calls */}
+          <button
+            // onClick={() =>
+            //   [1, 2, 3].forEach(() => {
+            //     setTimeout(() => {
+            //       getCountries();
+            //     }, 300)
+            //   })
+            // }
+            onClick={() => {
+              getCountries();
+              getCountriesTest();
+            }}
+            className={styles.card}
+          >
+            12 api calls
+            {/* {
+              data &&
+              data.countries &&
+              data.countries.map((c, i) => {
+                if (error) return <h1>Error</h1>;
+                if (loading) return <h1>Loading...</h1>;
+                return <div key={i}>{c.name}</div>
+                }
+              )
+            } */}
+          </button>
 
+          {/* 50 API Calls */}
           <a href="https://nextjs.org/learn" className={styles.card}>
             <h3>Learn &rarr;</h3>
             <p>Learn about Next.js in an interactive course with quizzes!</p>
           </a>
 
-          <a href="https://github.com/vercel/next.js/tree/master/examples" className={styles.card}>
+          {/* 1 API Call + 100 dom events */}
+          <a
+            href="https://github.com/vercel/next.js/tree/master/examples"
+            className={styles.card}
+          >
             <h3>Examples &rarr;</h3>
             <p>Discover and deploy boilerplate example Next.js projects.</p>
           </a>
 
+          {/* 12 API Calls + 100 dom events */}
           <a
             href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
             className={styles.card}
           >
             <h3>Deploy &rarr;</h3>
-            <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
+            <p>
+              Instantly deploy your Next.js site to a public URL with Vercel.
+            </p>
           </a>
+
+          {/* 50 API Calls + 100 dom events */}
         </div>
       </main>
 
@@ -83,11 +124,12 @@ const Home = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
+          Powered by{" "}
+          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
         </a>
       </footer>
     </div>
   );
-}
+};
 
 export default withApollo({ ssr: true })(Home);

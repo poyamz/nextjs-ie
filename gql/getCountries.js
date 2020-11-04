@@ -8,3 +8,19 @@ export const GET_COUNTRIES = gql`
     }
   }
 `;
+
+export const GET_BRAZIL = gql`
+  {
+    country(code: "BR") {
+      name
+      native
+      capital
+      emoji
+      currency
+      languages {
+        code
+        name
+      }
+    }
+  }
+`;
