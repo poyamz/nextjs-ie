@@ -1,22 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
-
-import { withApollo } from "../libs/apollo";
 import { useQuery } from "@apollo/react-hooks"; // initial load
+import { useLazyQuery } from "@apollo/client";
+import styles from "../styles/Home.module.css";
+import { withApollo } from "../libs/apollo";
 import {
   GET_COUNTRIES,
-  GET_BRAZIL,
   GET_COUNTRIES_BY_CODE,
 } from "../gql/getCountries";
 
-import { useLazyQuery } from "@apollo/client";
 
 const Home = () => {
-  // const [countriesData, setCountriesData] = useState(0);
-
-  // const [countriesData, setCountriesData] = useState(null);
-
   const {
     loading: loadingCountries,
     error: errorCountries,
@@ -25,65 +19,49 @@ const Home = () => {
     fetchPolicy: "no-cache",
   });
 
-  // const [getCountries, { loading, error, data }] = useLazyQuery(GET_COUNTRIES, {
-  //   fetchPolicy: "no-cache",
-  // });
-
-  // const [
-  //   getCountriesTest,
-  //   { loading: newLoad, error: newError, data: newData },
-  // ] = useLazyQuery(GET_BRAZIL, {
-  //   fetchPolicy: "no-cache",
-  // });
-
   const [getCountriesByCode] = useLazyQuery(GET_COUNTRIES_BY_CODE, {
     fetchPolicy: "no-cache",
   });
 
-  const getCountries = () => {
+  const getCountries = (count) => {
     dataCountries &&
       dataCountries.countries.map(({ code }, index) => {
-        if (index > 4) return;
-        console.log("code", code);
-        getCountriesByCode({
-          fetchPolicy: "no-cache",
-          variables: {
-            countryCode: code,
-          },
-        });
+        if (index > count) return;
+        const query = `
+          {
+            country(code: "${code}") {
+              name
+              native
+              capital
+              emoji
+              currency
+              languages {
+                code
+                name
+              }
+            }
+          }
+        `;
+        const url = "https://countries.trevorblades.com/";
+        const opts = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+          body: JSON.stringify({ query }),
+        };
+        fetch(url, opts)
+          .then((res) => res.json())
+          .then(console.log)
+          .catch(console.error);
       });
   };
 
-  // useEffect(() => {
-  //   console.log('country data', data);
-  // }, [data])
-
   useEffect(() => {
-    // if (!data) {
-    //   console.log('data effect')
-    //   getCountries();
-    //   getCountriesTest();
-    // }
-
-    // setCountriesData(dataCountries)
-    dataCountries &&
-      dataCountries.countries.map(({ code }, index) => {
-        if (index > 4) return;
-        console.log("code", code);
-        getCountriesByCode({
-          fetchPolicy: "no-cache",
-          variables: {
-            countryCode: code,
-          },
-        });
-      });
-    // const { loading, error, data } = useQuery(GET_COUNTRIES_BY_CODE, {
-    //   fetchPolicy: "no-cache",
-    //   variables: {
-    //     countryCode
-    //   }
-    // });
+    dataCountries && getCountries(4);
   }, [dataCountries]);
+
+  if (errorCountries) return <h1>Error loading countries</h1>;
+  if (loadingCountries) return <h1>Loading countries...</h1>;
 
   return (
     <div className={styles.container}>
@@ -128,25 +106,14 @@ const Home = () => {
           </button>
 
           {/* 12 API Calls */}
-          <button onClick={() => getCountries()} className={styles.card}>
+          <button onClick={() => getCountries(12)} className={styles.card}>
             12 api calls
-            {/* {
-              data &&
-              data.countries &&
-              data.countries.map((c, i) => {
-                if (error) return <h1>Error</h1>;
-                if (loading) return <h1>Loading...</h1>;
-                return <div key={i}>{c.name}</div>
-                }
-              )
-            } */}
           </button>
 
           {/* 50 API Calls */}
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+          <button onClick={() => getCountries(50)} className={styles.card}>
+            12 api calls
+          </button>
 
           {/* 1 API Call + 100 dom events */}
           <a
