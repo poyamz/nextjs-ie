@@ -2,7 +2,25 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 
-export default function Home() {
+import { withApollo } from '../libs/apollo';
+// import { useQuery } from '@apollo/react-hooks';
+import { GET_COUNTRIES } from '../gql/getCountries';
+
+import { useLazyQuery } from "@apollo/client";
+
+const Home = () => {
+
+  const [
+    getCountries, 
+    { loading, error, data }
+  ] = useLazyQuery(GET_COUNTRIES, {fetchPolicy: 'no-cache'});
+
+  // const { loading, error, data } = useQuery(ALL_CHARACTERS);
+  // if (error) return <h1>Error</h1>;
+  // if (loading) return <h1>Loading...</h1>;
+
+  console.log('data', data);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -20,6 +38,20 @@ export default function Home() {
         </p>
 
         <div className={styles.grid}>
+          <button onClick={() => getCountries()} className={styles.card}>
+            Single api call
+            {
+              data &&
+              data.countries &&
+              data.countries.map((c, i) => {
+                if (error) return <h1>Error</h1>;
+                if (loading) return <h1>Loading...</h1>;
+                return <div key={i}>{c.name}</div>
+                }
+              )
+            }
+          </button>
+
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h3>Documentation &rarr;</h3>
             <p>Find in-depth information about Next.js features and API.</p>
@@ -57,3 +89,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default withApollo({ ssr: true })(Home);
