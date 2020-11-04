@@ -44,6 +44,11 @@ export default function Home() {
           Get started by editing <code className={styles.code}>pages/index.js</code>
         </p>
 
+        <div className={styles.block}>
+          <code>
+            {!loading && !error && JSON.stringify(data)}
+          </code>
+        </div>
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h3>Documentation &rarr;</h3>
