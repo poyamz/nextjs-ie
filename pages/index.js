@@ -9,7 +9,6 @@ import {
   GET_COUNTRIES_BY_CODE,
 } from "../gql/getCountries";
 
-
 const Home = () => {
   const {
     loading: loadingCountries,
@@ -23,29 +22,28 @@ const Home = () => {
     fetchPolicy: "no-cache",
   });
 
-  const getCountries = (count) => {
-    dataCountries &&
-      dataCountries.countries.map(({ code }, index) => {
-        if (index > count) return;
+  const getQueries = (count) => {
+    Array.apply(null, Array(count)).map(() => {
         const query = `
           {
-            country(code: "${code}") {
+            strain(delay: 2) {
+              id
               name
-              native
-              capital
-              emoji
-              currency
-              languages {
-                code
-                name
+              desc
+              race
+              flavors
+              effects {
+                positive
+                negative
+                medical
               }
             }
           }
         `;
-        const url = "https://countries.trevorblades.com/";
+        const url = "http://strains-graph-api.herokuapp.com/graphql";
         const opts = {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": "DhMA9db" },
           cache: "no-store",
           body: JSON.stringify({ query }),
         };
@@ -57,7 +55,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    dataCountries && getCountries(4);
+    dataCountries && getQueries(4);
   }, [dataCountries]);
 
   if (errorCountries) return <h1>Error loading countries</h1>;
@@ -106,12 +104,12 @@ const Home = () => {
           </button>
 
           {/* 12 API Calls */}
-          <button onClick={() => getCountries(12)} className={styles.card}>
+          <button onClick={() => getQueries(12)} className={styles.card}>
             12 api calls
           </button>
 
           {/* 50 API Calls */}
-          <button onClick={() => getCountries(50)} className={styles.card}>
+          <button onClick={() => getQueries(50)} className={styles.card}>
             50 api calls
           </button>
 
