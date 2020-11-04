@@ -1,33 +1,8 @@
 import { useEffect } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
-import { gql, useQuery } from '@apollo/client';
-
-const QUERY = gql`
-  query SearchLocation {
-    searchLocation(query: "vauxhall") {
-      coords {
-        lat
-        lng
-      }
-      address
-      district
-      city
-      county
-      postalCode
-    }
-  }
-`;
 
 export default function Home() {
-  const { loading, error, data } = useQuery(QUERY);
-
-  useEffect(() => {
-    if (!loading && !error) {
-      console.log('data :>> ', data);
-    }
-  }, [loading, error, data]);
-
   return (
     <div className={styles.container}>
       <Head>
@@ -44,11 +19,6 @@ export default function Home() {
           Get started by editing <code className={styles.code}>pages/index.js</code>
         </p>
 
-        <div className={styles.block}>
-          <code>
-            {!loading && !error && JSON.stringify(data)}
-          </code>
-        </div>
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h3>Documentation &rarr;</h3>
