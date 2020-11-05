@@ -40,7 +40,7 @@ const Home = () => {
             }
           }
         `;
-        const url = "http://strains-graph-api.herokuapp.com/graphql";
+        const url = "https://strains-graph-api.herokuapp.com/graphql";
         const opts = {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": "DhMA9db" },
