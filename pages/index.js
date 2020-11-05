@@ -26,17 +26,12 @@ const Home = () => {
     Array.apply(null, Array(count)).map(() => {
         const query = `
           {
-            strain(delay: 2) {
+            strain(delay: 1) {
               id
               name
               desc
               race
               flavors
-              effects {
-                positive
-                negative
-                medical
-              }
             }
           }
         `;
