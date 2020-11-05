@@ -46,7 +46,7 @@ const Home = () => {
         .then((res) => res.json())
         .then((data) => {
           setTimeout(() => {
-            for (let i = 0; i < 200; i++) {
+            for (let i = 0; i < 250; i++) {
               document.body.appendChild(document.createElement('div'));
             }
           }, 750);
